@@ -25,6 +25,12 @@ const Schema = mongoose.Schema;
   UserSchema.pre('save', function(next) {
     const user = this;
     if (this.isModified('password') || this.isNew) {
+      const regex = new RegExp(
+        /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,}$/
+      );
+      if(regex.test(user.password) === false) {
+        return console.log("Regex error, ensure password is at least 5 characters long and contain at least one number and one letter. ")
+      }
         bcrypt.genSalt(10, (err, salt)=> {
             if (err) {
                 return next(err);
